@@ -1,4 +1,4 @@
-from games_src.game import BoardGame as BG
+from game import BoardGame as BG
 import numpy as np
 import torch
 
