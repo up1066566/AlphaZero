@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import torch
 
-class Boardgame(ABC):
+class BoardGame(ABC):
     def __init__(self, rows: int, cols: int, action_channels: int = 1):
         self.rows = rows
         self.cols = cols
@@ -15,7 +15,7 @@ class Boardgame(ABC):
         pass
 
     @abstractmethod
-    def get_next_state(self, state: np.ndarray, action: int, player: int) -> np.ndarray:
+    def get_next_state(self, state: np.ndarray, action: int , player: int) -> np.ndarray:
         """Returns next state, after the action of player 1 or -1"""
         pass
 
@@ -28,10 +28,10 @@ class Boardgame(ABC):
         pass
 
     @abstractmethod
-    def get_result_and_terminated(self, state: np.ndarray, action: int) -> tuple[float, bool]:
+    def get_result_and_terminated(self, state: np.ndarray, action: int) -> tuple[int, bool]:
         """
         Checks if the game is terminated and gets the result
-        - result: 1.0 (win), 0.0 (draw / not terminated), -1.0 (lose)
+        - result: 1 (win), 0 (draw / not terminated), -1 (lose)
         """
         pass
 
