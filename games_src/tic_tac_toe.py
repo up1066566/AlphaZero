@@ -34,7 +34,7 @@ class TicTacToe(BG):
         if (row+col == 2) and np.all(np.diag(np.fliplr(state)) == player):
             return player, 1
         # terminated with draw
-        if not self.get_valid_actions(state):
+        if not np.any(self.get_valid_actions(state)):
             return 0, 1 
         
         return 0,0
