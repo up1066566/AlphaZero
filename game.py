@@ -2,38 +2,44 @@ from abc import ABC, abstractmethod
 import numpy as np
 import torch
 
-class Boardgame:
-    def __init__(self, rows: int, cols: int, state_channels: int =1, action_channels: int=1):
+class Boardgame(ABC):
+    def __init__(self, rows: int, cols: int, action_channels: int = 1):
         self.rows = rows
         self.cols = cols
-        self.state_channels = action_channels
         self.action_channels = action_channels
-        self.player = 1
-        self.state = None
-    
+        self.action_size = self.rows * self.cols * self.action_channels
+
     @abstractmethod
-    def set_initial_state(self) -> None:
+    def get_initial_state(self) -> np.ndarray:
+        """Return initial state of size rows*cols*channels"""
         pass
-    
-    def get_state(self) -> np.ndarray:
-        return self.state
-    
+
     @abstractmethod
-    def get_actions(self) -> np.ndarray:
-        "It must return the action space rows*cols*action_channels"
+    def get_next_state(self, state: np.ndarray, action: int, player: int) -> np.ndarray:
+        """Returns next state, after the action of player 1 or -1"""
         pass
-    
+
     @abstractmethod
-    def get_policy(self) -> np.ndarray:
-        "It will be a vector, with all valid actions and their probabilities"
+    def get_valid_actions(self, state: np.ndarray) -> np.ndarray:
+        """
+        Returns 1D binary array with length action_size
+        valid actions are True, invalid values are False
+        """
         pass
-    
+
     @abstractmethod
-    def get_next_state(self, action) -> np.ndarray:
+    def get_result_and_terminated(self, state: np.ndarray, action: int) -> tuple[float, bool]:
+        """
+        Checks if the game is terminated and gets the result
+        - result: 1.0 (win), 0.0 (draw / not terminated), -1.0 (lose)
+        """
         pass
-    
-    def switch_player(self) -> None:
-        self.player = -self.player
-    
-    def get_opp_state(self) -> np.ndarray:
-        return -self.state
+
+    @abstractmethod
+    def get_encoded_state(self, state: np.ndarray) -> torch.Tensor:
+        """Converts state to PyTorch Tensor with shape (state_channels, rows, cols)."""
+        pass
+
+    def switch_player(self, player: int) -> int:
+        """Return opponent player (1 -> -1, -1 -> 1)."""
+        return -player
